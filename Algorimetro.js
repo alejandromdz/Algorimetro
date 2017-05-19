@@ -8,6 +8,6 @@ console.log(Algoritmos);
 
 Algoritmos.forEach(function(file){
     console.log(Algoritmo+'/'+file)
-    require(Algoritmo+'/'+file);
+    let fn = require(Algoritmo+'/'+file);
 }
 )
