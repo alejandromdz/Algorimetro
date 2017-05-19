@@ -9,5 +9,6 @@ console.log(Algoritmos);
 Algoritmos.forEach(function(file){
     console.log(Algoritmo+'/'+file)
     let fn = require(Algoritmo+'/'+file);
+    //comment
 }
 )
