@@ -1,3 +1,21 @@
+import * as fs from 'fs';
+
+const  Algoritmo='./QuickSort'
+
+var Algoritmos=
+fs.readdirSync(Algoritmo);
+
+console.log(Algoritmos);
+
+Algoritmos.forEach(function(file){
+    console.log(Algoritmo+'/'+file)
+    let fn = require(Algoritmo+'/'+file);
+    //comment
+}
+)
+
+
+
 class Algorithm{
     type:string;
     testFn:Function;
