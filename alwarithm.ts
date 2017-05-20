@@ -1,61 +1,43 @@
 import * as fs from 'fs';
-
 const  Algoritmo='./QuickSort'
 
-var Algoritmos=
-fs.readdirSync(Algoritmo);
-
-console.log(Algoritmos);
-
-Algoritmos.forEach(function(file){
-    console.log(Algoritmo+'/'+file)
-    let fn = require(Algoritmo+'/'+file);
-    //comment
-}
-)
-
-
-
 class Algorithm{
-    type:string;
+    name:string
     testFn:Function;
     status:boolean;
-    iterationTimes:number[];
+    iterationsTime:number=0;
     average:number;
-    getAverage(){
-        let sum:number = 0;
-        for(let i:number; i<this.iterationTimes.length-1; i++){
-            sum+=this.iterationTimes[i];
-        }
-        this.average = sum / (this.iterationTimes.length-1) ;
+    getAverage(iterations:number){
+        this.average = this.iterationsTime/iterations;
         return this.average;
     }
 
-    constructor(type:string, approach:Function){
-        this.type=type;
-        this.testFn=approach;
+    constructor(approach:Function, name:string){
+        this.testFn = approach;
+        this.name = name;
     }
 }
 
 class TestCycle{
-    approaches:Algorithm[];
-    inputType:string;
+    approaches:Algorithm[] = [];
     input:any;
     output:any;
     iterations:number;
     name:string;
-    constructor(type:string, input:any, output:any, iterations:number){
-        this.name = type;
+    constructor(input:any, output:any, iterations:number){
         this.input = input;
         this.output = output;
         this.iterations = iterations;
     }
     addApproach(approach:Algorithm){
+        console.log(approach)
         this.approaches.push(approach);
     }
     runTests(){
         for(let approach of this.approaches ){
             //run each approach...
+            let start = Date.now();
+
             for( let i = 0; i<this.iterations; i++ ){
                 //setup iteration
                 let sample;
@@ -69,16 +51,39 @@ class TestCycle{
                 }
 
                 //start test
-                let start = Date.now();
+                // console.log(`sample: ${sample}`);
                 let result = approach.testFn(sample);
-                let end = Date.now();
+                // console.log(`result: ${result}`);
+                
                 approach.status = JSON.stringify(result) === JSON.stringify(this.output); 
-                approach.iterationTimes.push( end-start );
             }
-
-            approach.getAverage();
+            let end = Date.now();
+            approach.iterationsTime = end-start;
+            approach.getAverage(this.iterations);
         }
     }
 }
 
-let quickSortTest = new TestCycle('quicksort',[3,2,1],[1,2,3],30)
+
+
+var Algoritmos=
+fs.readdirSync(Algoritmo);
+
+let quicksortTest = new TestCycle([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+    [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,8,8,8,8,9,9,9,9,10,10,10,10,11,11,11,11,12,12,12,12,13,13,13,13,14,14,14,14,15,15,15,15,16,16,16,16,17,17,17,17,18,18,18,18,19,19,19,19,20,20,20,20]
+    ,1000);
+
+Algoritmos.forEach(function(file){
+    let fn = require(Algoritmo+'/'+file);
+
+    quicksortTest.addApproach(new Algorithm(fn,file));
+}
+)
+
+quicksortTest.runTests();
+quicksortTest.approaches.forEach(function(approach){
+    if(approach.status){
+        console.log(`Result is correct: ${approach.status}`);
+    }
+    console.log(`Approach by ${approach.name} avg time was ${approach.average} with ${quicksortTest.iterations}.`);
+})
